@@ -80,7 +80,7 @@ export const getAllNews = asyncHandler(async (req: Request, res: Response) => {
       orderBy: { createdAt: "desc" },
     });
 
-    const formattedNews = newsList.map((news) => ({
+    const formattedNews = newsList.map((news:any) => ({
       ...news,
       image: news.image
         ? `data:image/jpeg;base64,${Buffer.from(news.image).toString("base64")}`
@@ -153,7 +153,7 @@ export const getNewsById = asyncHandler(async (req: Request, res: Response) => {
       authorImage: `data:image/jpeg;base64,${Buffer.from(
         news.authorImage
       ).toString("base64")}`,
-      relatedNews: relatedNews.map((item) => ({
+      relatedNews: relatedNews.map((item:any) => ({
         ...item,
         image: item.image
           ? `data:image/jpeg;base64,${Buffer.from(item.image).toString(

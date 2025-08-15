@@ -185,7 +185,7 @@ export const getAllSubWings = asyncHandler(
       },
     });
 
-    const formattedSubWings = subWings.map((subWing) => ({
+    const formattedSubWings = subWings.map((subWing:any) => ({
       id: subWing.id,
       name: subWing.name,
       description: subWing.description || null,
@@ -220,7 +220,7 @@ export const getSubWingMembers = asyncHandler(
       ],
     });
 
-    const formattedMembers = members.map((member) => ({
+    const formattedMembers = members.map((member:any) => ({
       id: member.id,
       name: member.name,
       position: member.position,
@@ -264,7 +264,7 @@ export const getSubWingDetails = asyncHandler(
       backgroundColor: subWing.backgroundColor,
       mainColor: subWing.mainColor,
       icon: bufferToSvgDataUrl(subWing.icon),
-      members: subWing.members.map((member) => ({
+      members: subWing.members.map((member:any) => ({
         id: member.id,
         name: member.name,
         position: member.position,

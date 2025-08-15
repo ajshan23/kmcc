@@ -234,7 +234,7 @@ export const getActiveJobs = asyncHandler(
     });
 
     // ✅ Convert logo to Base64 for response
-    const formattedJobs = jobs.map((job) => ({
+    const formattedJobs = jobs.map((job:any) => ({
       id: job.id,
       companyName: job.companyName,
       position: job.position,
@@ -386,7 +386,7 @@ export const getAllJobsAdmin = asyncHandler(
     });
 
     // ✅ Convert logo to Base64
-    const formattedJobs = jobs.map((job) => ({
+    const formattedJobs = jobs.map((job:any) => ({
       ...job,
       logo: job.logo
         ? `data:image/jpeg;base64,${Buffer.from(job.logo).toString("base64")}`
@@ -526,7 +526,7 @@ export const getJobApplications = asyncHandler(
     });
 
     // ✅ Convert Buffer to Base64 format
-    const formattedApplications = applications.map((app) => ({
+    const formattedApplications = applications.map((app:any) => ({
       id: app.id,
       fullName: app.fullName,
       email: app.email,

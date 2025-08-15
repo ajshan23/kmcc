@@ -63,7 +63,7 @@ export const getAllExclusiveMembers = asyncHandler(
         },
       });
 
-      const formattedMembers = members.map((member) => ({
+      const formattedMembers = members.map((member:any) => ({
         ...member,
         image: member.image
           ? `data:image/jpeg;base64,${Buffer.from(member.image).toString(
@@ -201,7 +201,7 @@ export const reorderExclusiveMembers = asyncHandler(
       });
 
       if (members.length !== memberIds.length) {
-        const foundIds = members.map((m) => m.id);
+        const foundIds = members.map((m:any) => m.id);
         const missingIds = memberIds.filter((id) => !foundIds.includes(id));
         throw new ApiError(
           400,
@@ -257,7 +257,7 @@ export const deleteExclusiveMember = asyncHandler(
       });
 
       await prismaClient.$transaction(
-        remainingMembers.map((member, index) =>
+        remainingMembers.map((member:any, index:number) =>
           prismaClient.exclusiveMember.update({
             where: { id: member.id },
             data: { priority: index },

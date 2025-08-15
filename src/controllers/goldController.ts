@@ -327,7 +327,7 @@ export const addWinners = asyncHandler(async (req: Request, res: Response) => {
   });
 
   if (alreadyWinningLots.length > 0) {
-    const wonIds = alreadyWinningLots.map((w) => w.lotId).join(", ");
+    const wonIds = alreadyWinningLots.map((w:any) => w.lotId).join(", ");
     throw new ApiError(400, `Lot(s) already won: ${wonIds}`);
   }
 
@@ -409,12 +409,12 @@ export const exportPaymentsToExcel = asyncHandler(
     }
 
     // Prepare Excel data
-    const excelData = lots.map((lot) => ({
+    const excelData = lots.map((lot:any) => ({
       "Member ID": lot.user.memberId,
       Name: lot.user.name,
       "Total Payments": lot.payments.length,
       "Payment Dates": lot.payments
-        .map((p) => `${p.year}-${String(p.month).padStart(2, "0")}`)
+        .map((p:any) => `${p.year}-${String(p.month).padStart(2, "0")}`)
         .join(", "),
       "Last Payment": lot.payments.length
         ? `${lot.payments[lot.payments.length - 1].year}-${String(

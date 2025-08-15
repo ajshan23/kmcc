@@ -96,7 +96,7 @@ export const getAllServices = asyncHandler(
     });
 
     // Convert image Buffer to Base64 safely
-    const formattedServices = services.map((service) => ({
+    const formattedServices = services.map((service:any) => ({
       ...service,
       image: service.image
         ? `data:image/jpeg;base64,${Buffer.from(service.image).toString(

@@ -47,12 +47,12 @@ export const getEvents = asyncHandler(async (req: Request, res: Response) => {
   });
 
   // Convert binary images to base64 for response
-  const eventsWithImages = events.map((event) => ({
+  const eventsWithImages = events.map((event:any) => ({
     ...event,
     image: event.image
       ? `data:image/jpeg;base64,${Buffer.from(event.image).toString("base64")}`
       : null,
-    registrations: event.registrations.map((registration) => ({
+    registrations: event.registrations.map((registration:any) => ({
       user: {
         profileImage: registration.user.profileImage
           ? `data:image/jpeg;base64,${Buffer.from(
@@ -143,14 +143,14 @@ export const getEventById = asyncHandler(
     };
 
     // Convert binary images for suggested events
-    const suggestedEventsWithImages = suggestedEvents.map((event) => ({
+    const suggestedEventsWithImages = suggestedEvents.map((event:any) => ({
       ...event,
       image: event.image
         ? `data:image/jpeg;base64,${Buffer.from(event.image).toString(
             "base64"
           )}`
         : null,
-      registrations: event.registrations.map((reg) => ({
+      registrations: event.registrations.map((reg:any) => ({
         user: {
           profileImage: reg.user.profileImage
             ? `data:image/jpeg;base64,${Buffer.from(
@@ -163,7 +163,7 @@ export const getEventById = asyncHandler(
     }));
 
     const isRegistered = event.registrations.some(
-      (reg) => reg.userId === userId
+      (reg:any) => reg.userId === userId
     );
 
     res.json(
@@ -425,7 +425,7 @@ export const homePageData = asyncHandler(
         : null;
 
       // Format events with registration count
-      const formattedEvents = eventsWithRegistrations.map((event) => ({
+      const formattedEvents = eventsWithRegistrations.map((event:any) => ({
         id: event.id,
         title: event.title,
         eventDate: event.eventDate,
@@ -442,7 +442,7 @@ export const homePageData = asyncHandler(
         createdAt: event.createdAt,
         updatedAt: event.updatedAt,
         totalRegistrations: event._count.registrations,
-        registrations: event.registrations.slice(0, 3).map((reg) => ({
+        registrations: event.registrations.slice(0, 3).map((reg:any) => ({
           user: {
             profileImage: reg.user.profileImage
               ? `data:image/jpeg;base64,${Buffer.from(
@@ -454,7 +454,7 @@ export const homePageData = asyncHandler(
       }));
 
       // Format services
-      const formattedServices = services.map((service) => ({
+      const formattedServices = services.map((service:any) => ({
         ...service,
         image: service.image
           ? `data:image/jpeg;base64,${Buffer.from(service.image).toString(
@@ -464,7 +464,7 @@ export const homePageData = asyncHandler(
       }));
 
       // Format news
-      const formattedNews = newsList.map((news) => ({
+      const formattedNews = newsList.map((news:any) => ({
         id: news.id,
         type: news.type,
         heading: news.heading,
@@ -478,7 +478,7 @@ export const homePageData = asyncHandler(
       }));
 
       // Format jobs
-      const formattedJobs = jobs.map((job) => ({
+      const formattedJobs = jobs.map((job:any) => ({
         ...job,
         logo: job.logo
           ? `data:image/jpeg;base64,${Buffer.from(job.logo).toString("base64")}`
@@ -486,7 +486,7 @@ export const homePageData = asyncHandler(
       }));
 
       // Format travels
-      const formattedTravels = travels.map((travel) => ({
+      const formattedTravels = travels.map((travel:any) => ({
         id: travel.id,
         userId: travel.userId,
         userName: travel.user.name,
@@ -513,7 +513,7 @@ export const homePageData = asyncHandler(
           (currentMonth === 1 ? currentYear - 1 : currentYear);
 
       // Format winners
-      const formattedWinners = winnersToShow.map((winner) => ({
+      const formattedWinners = winnersToShow.map((winner:any) => ({
         id: winner.id,
         year: winner.year,
         month: winner.month,
@@ -764,7 +764,7 @@ export const getProfile = asyncHandler(
       : null;
 
     // Format all gold program data
-    const goldProgramDetails = goldLots.map((lot) => ({
+    const goldProgramDetails = goldLots.map((lot:any) => ({
       lotId: lot.id,
       programId: lot.program.id,
       programName: lot.program.name,
@@ -786,14 +786,14 @@ export const getProfile = asyncHandler(
     }));
 
     // Format investment deposits for chart
-    const investmentDepositHistory = investmentDeposits.map((deposit) => ({
+    const investmentDepositHistory = investmentDeposits.map((deposit:any) => ({
       date: deposit.depositDate,
       amount: deposit.amount,
     }));
 
     // Calculate cumulative investment over time
     let cumulativeAmount = 0;
-    const cumulativeInvestmentData = investmentDeposits.map((deposit) => {
+    const cumulativeInvestmentData = investmentDeposits.map((deposit:any) => {
       cumulativeAmount += deposit.amount;
       return {
         date: deposit.depositDate,
@@ -879,7 +879,7 @@ export const getAttendedEvents = asyncHandler(
     });
 
     // Format the response with event details
-    const formattedEvents = attendedEvents.map((registration) => ({
+    const formattedEvents = attendedEvents.map((registration:any) => ({
       id: registration.event.id,
       title: registration.event.title,
       eventDate: registration.event.eventDate,
@@ -978,7 +978,7 @@ export const getNorkaDetails = asyncHandler(
       let hasNorkaId = "Not provided";
       let norkaIdExpiryDate = "Not provided";
 
-      norkaAnswers.forEach((answer) => {
+      norkaAnswers.forEach((answer:any) => {
         const questionText = answer.question.text.toLowerCase();
 
         if (questionText.includes("valid norka id available")) {
@@ -1220,7 +1220,7 @@ export const exportAllUsers = asyncHandler(
       ];
 
       // Add data to worksheets
-      users.forEach(user => {
+      users.forEach((user:any) => {
         // Add to Users sheet
         usersWorksheet.addRow({
           id: user.id,
@@ -1250,7 +1250,7 @@ export const exportAllUsers = asyncHandler(
         }
 
         // Add to Events sheet
-        user.EventRegistration.forEach(registration => {
+        user.EventRegistration.forEach((registration:any) => {
           eventsWorksheet.addRow({
             userId: user.id,
             eventTitle: registration.event.title,
@@ -1262,8 +1262,8 @@ export const exportAllUsers = asyncHandler(
         });
 
         // Add to Gold Program sheet
-        user.GoldLot.forEach(lot => {
-          const lastPayment = lot.payments[0] 
+        user.GoldLot.forEach((lot:any) => {
+          const lastPayment = lot.payments[0]
             ? `${lot.payments[0].month}/${lot.payments[0].year}`
             : 'None';
             
@@ -1283,7 +1283,7 @@ export const exportAllUsers = asyncHandler(
         });
 
         // Add to Investments sheet
-        user.LongTermInvestment.forEach(investment => {
+        user.LongTermInvestment.forEach((investment:any) => {
           investmentsWorksheet.addRow({
             userId: user.id,
             investmentId: investment.id,

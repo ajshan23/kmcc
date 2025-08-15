@@ -23,7 +23,7 @@ export const createSurvey = asyncHandler(
     const users = await prismaClient.user.findMany();
 
     // Create survey progress for existing users
-    const surveyProgressEntries = users.map((user) => ({
+    const surveyProgressEntries = users.map((user:any) => ({
       userId: user.id,
       surveyId: newSurvey.id,
       completed: false,
@@ -152,7 +152,7 @@ export const reorderQuestions = asyncHandler(
     });
 
     if (questions.length !== questionIds.length) {
-      const foundIds = questions.map((q) => q.id);
+      const foundIds = questions.map((q:any) => q.id);
       const missingIds = questionIds.filter((id) => !foundIds.includes(id));
       throw new ApiError(
         400,
@@ -243,12 +243,12 @@ async function ensureSurveyProgressForUser(userId: number) {
     where: { userId },
   });
 
-  const existingSurveyIds = new Set(existingProgress.map((sp) => sp.surveyId));
-  const missingSurveys = surveys.filter((s) => !existingSurveyIds.has(s.id));
+  const existingSurveyIds = new Set(existingProgress.map((sp:any) => sp.surveyId));
+  const missingSurveys = surveys.filter((s:any) => !existingSurveyIds.has(s.id));
 
   if (missingSurveys.length > 0) {
     await prismaClient.userSurveyProgress.createMany({
-      data: missingSurveys.map((survey) => ({
+      data: missingSurveys.map((survey:any) => ({
         userId,
         surveyId: survey.id,
         completed: false,
@@ -285,7 +285,7 @@ export const getSurveyQuestions = asyncHandler(
     });
 
     // Convert image to Base64 format for each question
-    const questionsWithBase64Images = questions.map((question) => ({
+    const questionsWithBase64Images = questions.map((question:any) => ({
       ...question,
       image: question.image
         ? `data:image/jpeg;base64,${Buffer.from(question.image).toString(
@@ -368,10 +368,10 @@ export const getPendingSurvey = asyncHandler(
     });
 
     const answeredQuestionIds = new Set(
-      answeredQuestions1.map((q) => q.questionId)
+      answeredQuestions1.map((q:any) => q.questionId)
     );
     const pendingQuestion = allQuestions.find(
-      (q) => !answeredQuestionIds.has(q.id)
+      (q:any) => !answeredQuestionIds.has(q.id)
     );
 
     // ✅ Mark survey as completed if all questions are answered
@@ -441,11 +441,11 @@ export const getPendingQuestion = asyncHandler(
     });
 
     const answeredQuestionIds = new Set(
-      answeredQuestions.map((q) => q.questionId)
+      answeredQuestions.map((q:any) => q.questionId)
     );
 
     const pendingQuestion = allQuestions.find(
-      (q) => !answeredQuestionIds.has(q.id)
+      (q:any) => !answeredQuestionIds.has(q.id)
     );
 
     if (!pendingQuestion) {
@@ -534,7 +534,7 @@ export const submitAnswer = asyncHandler(
     });
 
     const remainingQuestion = allQuestions.find(
-      (q) => !answeredQuestionsList.some((a) => a.questionId === q.id)
+      (q:any) => !answeredQuestionsList.some((a:any) => a.questionId === q.id)
     );
 
     if (!remainingQuestion) {
@@ -702,7 +702,7 @@ export const deleteQuestion = asyncHandler(
     });
 
     await prismaClient.$transaction(
-      remainingQuestions.map((q, index) =>
+      remainingQuestions.map((q:any, index:any) =>
         prismaClient.question.update({
           where: { id: q.id },
           data: { position: index },
@@ -883,7 +883,7 @@ export const getSurveyAnswers = asyncHandler(
     });
 
     // Group answers by user
-    const answersByUser = answers.reduce((acc, answer) => {
+    const answersByUser = answers.reduce((acc:any , answer:any) => {
       if (!acc[answer.userId]) {
         acc[answer.userId] = {
           user: answer.user,
@@ -896,7 +896,7 @@ export const getSurveyAnswers = asyncHandler(
 
     // Calculate statistics for each question
     const questionStats = survey.questions
-      .map((question) => {
+      .map((question:any) => {
         // Only process multiple choice questions
         if (question.type !== "multiple_choice") return null;
 
@@ -905,7 +905,7 @@ export const getSurveyAnswers = asyncHandler(
 
         if (Array.isArray(question.options)) {
           // If options is already an array (direct from Prisma)
-          options = question.options.filter((opt) => typeof opt === "string");
+          options = question.options.filter((opt:any) => typeof opt === "string");
         } else if (typeof question.options === "string") {
           // If options is a JSON string (legacy format)
           try {
@@ -930,7 +930,7 @@ export const getSurveyAnswers = asyncHandler(
         let totalAnswers = 0;
 
         // Count answers for each option
-        Object.values(answersByUser).forEach((userData) => {
+        Object.values(answersByUser).forEach((userData:any  ) => {
           const answer = userData.answers[question.id];
           if (typeof answer === "string" && stats.hasOwnProperty(answer)) {
             stats[answer]++;
@@ -1057,7 +1057,7 @@ export const exportSurveyAnswers = asyncHandler(
       const questionColumns: { [key: number]: string } = {};
 
       // Add question columns (dynamically named qn1, qn2, etc.)
-      survey.questions.forEach((question, index) => {
+      survey.questions.forEach((question:any, index:any) => {
         const columnName = `qn${index + 1}`;
         headers.push(columnName);
         questionColumns[question.id] = columnName;
@@ -1083,7 +1083,7 @@ export const exportSurveyAnswers = asyncHandler(
         const row: any[] = [userData.user.name, userData.user.iqamaNumber];
 
         // Add answers in the correct order
-        survey.questions.forEach((question) => {
+        survey.questions.forEach((question:any) => {
           row.push(userData.answers[question.id] || "");
         });
 

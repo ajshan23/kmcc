@@ -11,7 +11,7 @@ const normalizeId = (id: string) => parseInt(id, 10).toString();
 // Helper function to create survey progress for a new user
 async function createSurveyProgressForUser(userId: number) {
   const surveys = await prismaClient.survey.findMany();
-  return surveys.map((survey) => ({
+  return surveys.map((survey:any) => ({
     userId,
     surveyId: survey.id,
     completed: false,
@@ -29,7 +29,7 @@ export const signup = asyncHandler(async (req: Request, res: Response) => {
   // Fetch all memberships and normalize `memberId` before checking
   const memberships = await prismaClient.membership.findMany();
   const existingMember = memberships.find(
-    (m) =>
+    (m:any) =>
       normalizeId(m.memberId) === normalizedMemberId &&
       m.iqamaNumber === iqamaNumber
   );
@@ -101,7 +101,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   // Fetch all users and normalize `memberId` before checking
   const users = await prismaClient.user.findMany();
   const user = users.find(
-    (u) =>
+    (u:any) =>
       normalizeId(u.memberId) === normalizedIdentifier ||
       u.iqamaNumber === identifier
   );

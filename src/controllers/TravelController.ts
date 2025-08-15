@@ -133,7 +133,7 @@ export const getUpcomingTravels = asyncHandler(
     });
 
     // Add isAccessed field if user is the creator
-    const travelsWithAccess = travels.map((travel) => ({
+    const travelsWithAccess = travels.map((travel:any) => ({
       ...travel,
       isAccessed: travel.user.id === userId,
     }));
@@ -324,7 +324,7 @@ export const exportTravelsToExcel = asyncHandler(
     ];
 
     // Add data rows
-    travels.forEach((travel) => {
+    travels.forEach((travel:any) => {
       worksheet.addRow({
         id: travel.id,
         memberId: travel.user.memberId,

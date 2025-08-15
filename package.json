@@ -28,6 +28,7 @@
     "nodemon": "^3.1.9",
     "nodmeon": "^0.0.1-security",
     "sharp": "^0.33.5",
+    "typescript": "^5.9.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
