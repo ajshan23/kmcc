@@ -1,0 +1,466 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:annu@localhost:3306/kmcc"
+}
+
+model Membership {
+  id          Int     @id @default(autoincrement())
+  memberId    String  @unique
+  iqamaNumber String  @unique
+  name        String
+  phoneNumber String?
+  status      String
+  areaName    String?
+
+  @@unique([memberId, iqamaNumber])
+  @@map("memberships")
+}
+
+model ContactInfo {
+  id      Int     @id @default(autoincrement())
+  userId  Int     @unique
+  phone   String?
+  address String?
+  user    user    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("contact_infos")
+}
+
+model Banner {
+  id        Int      @id @default(autoincrement())
+  image     Bytes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("banners")
+}
+
+model Service {
+  id            Int      @id @default(autoincrement())
+  title         String
+  location      String
+  startingTime  String
+  stoppingTime  String
+  availableDays String
+  image         Bytes?
+  phoneNumber   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("services")
+}
+
+model airport {
+  id                                   Int      @id @default(autoincrement())
+  iataCode                             String   @unique(map: "Airport_iataCode_key")
+  name                                 String
+  country                              String
+  travel_travel_fromAirportIdToairport travel[] @relation("travel_fromAirportIdToairport")
+  travel_travel_toAirportIdToairport   travel[] @relation("travel_toAirportIdToairport")
+}
+
+model book {
+  id          Int      @id @default(autoincrement())
+  title       String
+  author      String
+  description String?
+  pdfData     Bytes
+  coverImage  Bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model constitutioncommittee {
+  id                          Int                           @id @default(autoincrement())
+  title                       String
+  description                 String?
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime
+  constitutioncommitteemember constitutioncommitteemember[]
+}
+
+model constitutioncommitteemember {
+  id                    Int                   @id @default(autoincrement())
+  name                  String
+  position              String
+  image                 Bytes?
+  committeeId           Int
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime
+  constitutioncommittee constitutioncommittee @relation(fields: [committeeId], references: [id], map: "ConstitutionCommitteeMember_committeeId_fkey")
+
+  @@index([committeeId], map: "ConstitutionCommitteeMember_committeeId_idx")
+}
+
+model event {
+  id                Int                 @id @default(autoincrement())
+  title             String
+  description       String?
+  eventDate         DateTime
+  place             String
+  timing            String
+  highlights        Json
+  eventType         String
+  image             Bytes?
+  isFinished        Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime
+  eventregistration eventregistration[]
+}
+
+model eventregistration {
+  id         Int      @id @default(autoincrement())
+  eventId    Int
+  userId     Int
+  isAttended Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  event      event    @relation(fields: [eventId], references: [id], onDelete: Cascade, map: "EventRegistration_eventId_fkey")
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "EventRegistration_userId_fkey")
+
+  @@unique([eventId, userId], map: "EventRegistration_eventId_userId_key")
+  @@index([userId], map: "EventRegistration_userId_fkey")
+}
+
+model exclusivemember {
+  id        Int      @id @default(autoincrement())
+  name      String
+  position  String
+  image     Bytes?
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
+
+model goldlot {
+  id          Int           @id @default(autoincrement())
+  programId   Int
+  userId      Int
+  createdAt   DateTime      @default(now())
+  goldprogram goldprogram   @relation(fields: [programId], references: [id], map: "GoldLot_programId_fkey")
+  user        user          @relation(fields: [userId], references: [id], map: "GoldLot_userId_fkey")
+  goldpayment goldpayment[]
+  goldwinner  goldwinner[]
+
+  @@index([programId], map: "GoldLot_programId_fkey")
+  @@index([userId], map: "GoldLot_userId_fkey")
+}
+
+model goldpayment {
+  id        Int       @id @default(autoincrement())
+  lotId     Int
+  year      Int
+  month     Int
+  isPaid    Boolean   @default(false)
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  goldlot   goldlot   @relation(fields: [lotId], references: [id], map: "GoldPayment_lotId_fkey")
+
+  @@unique([lotId, year, month], map: "GoldPayment_lotId_year_month_key")
+}
+
+model goldprogram {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  startDate   DateTime     @default(now())
+  endDate     DateTime?
+  isActive    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime
+  goldlot     goldlot[]
+  goldwinner  goldwinner[]
+}
+
+model goldwinner {
+  id          Int         @id @default(autoincrement())
+  programId   Int
+  lotId       Int
+  year        Int
+  month       Int
+  prizeAmount Float?
+  createdAt   DateTime    @default(now())
+  goldlot     goldlot     @relation(fields: [lotId], references: [id], map: "GoldWinner_lotId_fkey")
+  goldprogram goldprogram @relation(fields: [programId], references: [id], map: "GoldWinner_programId_fkey")
+
+  @@index([lotId], map: "GoldWinner_lotId_fkey")
+  @@index([programId], map: "GoldWinner_programId_fkey")
+}
+
+model investmentdeposit {
+  id                 Int                @id @default(autoincrement())
+  investmentId       Int
+  amount             Float
+  depositDate        DateTime           @default(now())
+  notes              String?
+  createdAt          DateTime           @default(now())
+  longterminvestment longterminvestment @relation(fields: [investmentId], references: [id], map: "InvestmentDeposit_investmentId_fkey")
+
+  @@index([investmentId], map: "InvestmentDeposit_investmentId_fkey")
+}
+
+model job {
+  id                  Int              @id @default(autoincrement())
+  companyName         String
+  logo                Bytes
+  position            String
+  jobMode             String
+  salary              Int
+  place               String
+  jobDescription      String           @db.Text
+  keyResponsibilities Json
+  requirements        Json
+  benefits            Json
+  isClosed            Boolean          @default(false)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime
+  jobapplication      jobapplication[]
+}
+
+model jobapplication {
+  id        Int      @id @default(autoincrement())
+  jobId     Int
+  fullName  String
+  email     String
+  phone     String
+  resume    Bytes
+  createdAt DateTime @default(now())
+  job       job      @relation(fields: [jobId], references: [id], map: "JobApplication_jobId_fkey")
+
+  @@index([jobId], map: "JobApplication_jobId_fkey")
+}
+
+model longterminvestment {
+  id                Int                 @id @default(autoincrement())
+  userId            Int
+  startDate         DateTime            @default(now())
+  endDate           DateTime?
+  isActive          Boolean             @default(true)
+  totalDeposited    Float               @default(0)
+  totalProfit       Float               @default(0)
+  profitDistributed Float               @default(0)
+  profitPending     Float               @default(0)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime
+  investmentdeposit investmentdeposit[]
+  user              user                @relation(fields: [userId], references: [id], map: "LongTermInvestment_userId_fkey")
+  profitpayout      profitpayout[]
+
+  @@unique([userId, isActive], map: "LongTermInvestment_userId_isActive_key")
+}
+
+model news {
+  id          Int      @id @default(autoincrement())
+  type        String
+  heading     String
+  author      String
+  body        String   @db.Text
+  image       Bytes
+  authorImage Bytes
+  timeToRead  String
+  createdAt   DateTime @default(now())
+}
+
+model notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  data      Json?
+  isRead    Boolean  @default(false)
+  userId    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  user      user?    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Notification_userId_fkey")
+
+  @@index([userId], map: "Notification_userId_fkey")
+}
+
+model profile {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @unique(map: "Profile_userId_key")
+  occupation   String?
+  employer     String?
+  place        String?
+  dateOfBirth  DateTime?
+  bloodGroup   String?
+  kmccPosition String?
+  address      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime
+  user         user      @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Profile_userId_fkey")
+}
+
+model profitpayout {
+  id                 Int                @id @default(autoincrement())
+  investmentId       Int
+  amount             Float
+  payoutDate         DateTime           @default(now())
+  notes              String?
+  createdAt          DateTime           @default(now())
+  longterminvestment longterminvestment @relation(fields: [investmentId], references: [id], map: "ProfitPayout_investmentId_fkey")
+
+  @@index([investmentId], map: "ProfitPayout_investmentId_fkey")
+}
+
+model question {
+  id               Int                @id @default(autoincrement())
+  surveyId         Int
+  text             String
+  type             String
+  options          Json?
+  image            Bytes
+  required         Boolean            @default(true)
+  position         Int                @default(0)
+  survey           survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade, map: "Question_surveyId_fkey")
+  response         response[]
+  usersurveyanswer usersurveyanswer[]
+
+  @@index([surveyId], map: "Question_surveyId_fkey")
+}
+
+model response {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  answer     String
+  question   question @relation(fields: [questionId], references: [id], onDelete: Cascade, map: "Response_questionId_fkey")
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Response_userId_fkey")
+
+  @@index([questionId], map: "Response_questionId_fkey")
+  @@index([userId], map: "Response_userId_fkey")
+}
+
+model subwing {
+  id              Int             @id @default(autoincrement())
+  name            String
+  description     String?
+  icon            Bytes?
+  backgroundColor String          @default("#FFFFFF")
+  mainColor       String          @default("#000000")
+  subwingmember   subwingmember[]
+}
+
+model subwingmember {
+  id        Int     @id @default(autoincrement())
+  name      String
+  position  String
+  image     Bytes?
+  subWingId Int
+  subwing   subwing @relation(fields: [subWingId], references: [id], map: "SubWingMember_subWingId_fkey")
+
+  @@index([subWingId], map: "SubWingMember_subWingId_idx")
+}
+
+model survey {
+  id                 Int                  @id @default(autoincrement())
+  title              String
+  description        String?
+  isActive           Boolean              @default(true)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime
+  question           question[]
+  usersurvey         usersurvey[]
+  usersurveyanswer   usersurveyanswer[]
+  usersurveyprogress usersurveyprogress[]
+}
+
+model travel {
+  id                                    Int      @id @default(autoincrement())
+  userId                                Int
+  fromAirportId                         Int
+  toAirportId                           Int
+  travelDate                            DateTime
+  travelTime                            String
+  status                                String
+  createdAt                             DateTime @default(now())
+  airport_travel_fromAirportIdToairport airport  @relation("travel_fromAirportIdToairport", fields: [fromAirportId], references: [id], map: "Travel_fromAirportId_fkey")
+  airport_travel_toAirportIdToairport   airport  @relation("travel_toAirportIdToairport", fields: [toAirportId], references: [id], map: "Travel_toAirportId_fkey")
+  user                                  user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Travel_userId_fkey")
+
+  @@index([fromAirportId], map: "Travel_fromAirportId_fkey")
+  @@index([toAirportId], map: "Travel_toAirportId_fkey")
+  @@index([userId], map: "Travel_userId_fkey")
+}
+
+model user {
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  email                 String?                 @unique(map: "User_email_key")
+  gender                String?
+  memberId              String                  @unique(map: "User_memberId_key")
+  iqamaNumber           String                  @unique(map: "User_iqamaNumber_key")
+  phoneNumber           String                  @unique(map: "User_phoneNumber_key")
+  profileImage          Bytes?
+  password              String
+  areaName              String?
+  fcmToken              String?
+  isAdmin               Boolean                 @default(false)
+  isSuperAdmin          Boolean                 @default(false)
+  isSurveyCompleted     Boolean                 @default(false)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime
+  contactInfo           ContactInfo?
+  eventregistration     eventregistration[]
+  goldlot               goldlot[]
+  longterminvestment    longterminvestment[]
+  notification          notification[]
+  profile               profile?
+  response              response[]
+  travel                travel[]
+  usernotificationtoken usernotificationtoken[]
+  usersurvey            usersurvey[]
+  usersurveyanswer      usersurveyanswer[]
+  usersurveyprogress    usersurveyprogress[]
+}
+
+model usernotificationtoken {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  token  String @unique(map: "UserNotificationToken_token_key")
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserNotificationToken_userId_fkey")
+
+  @@index([userId], map: "UserNotificationToken_userId_idx")
+}
+
+model usersurvey {
+  id          Int     @id @default(autoincrement())
+  userId      Int
+  surveyId    Int
+  isCompleted Boolean @default(false)
+  survey      survey  @relation(fields: [surveyId], references: [id], onDelete: Cascade, map: "UserSurvey_surveyId_fkey")
+  user        user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserSurvey_userId_fkey")
+
+  @@unique([userId, surveyId], map: "UserSurvey_userId_surveyId_key")
+  @@index([surveyId], map: "UserSurvey_surveyId_fkey")
+}
+
+model usersurveyanswer {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  surveyId   Int
+  questionId Int
+  answer     String
+  question   question @relation(fields: [questionId], references: [id], onDelete: Cascade, map: "UserSurveyAnswer_questionId_fkey")
+  survey     survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade, map: "UserSurveyAnswer_surveyId_fkey")
+  user       user     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserSurveyAnswer_userId_fkey")
+
+  @@unique([userId, questionId], map: "UserSurveyAnswer_userId_questionId_key")
+  @@index([questionId], map: "UserSurveyAnswer_questionId_fkey")
+  @@index([surveyId], map: "UserSurveyAnswer_surveyId_fkey")
+}
+
+model usersurveyprogress {
+  id             Int     @id @default(autoincrement())
+  userId         Int
+  surveyId       Int
+  completed      Boolean @default(false)
+  lastQuestionId Int?
+  survey         survey  @relation(fields: [surveyId], references: [id], onDelete: Cascade, map: "UserSurveyProgress_surveyId_fkey")
+  user           user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "UserSurveyProgress_userId_fkey")
+
+  @@index([surveyId], map: "UserSurveyProgress_surveyId_fkey")
+  @@index([userId], map: "UserSurveyProgress_userId_fkey")
+}
