@@ -81,7 +81,7 @@ export const getUserInvestments = asyncHandler(
         where: { userId },
         include: {
           deposits: { orderBy: { depositDate: "desc" } },
-          profitPayouts: { orderBy: { payoutDate: "desc" } },
+          payouts: { orderBy: { payoutDate: "desc" } },
           user: true,
         },
         orderBy: { startDate: "desc" },
@@ -146,7 +146,7 @@ export const getInvestments = asyncHandler(
         include: {
           user: true,
           deposits: { orderBy: { depositDate: "desc" }, take: 1 },
-          profitPayouts: { orderBy: { payoutDate: "desc" }, take: 1 },
+          payouts: { orderBy: { payoutDate: "desc" }, take: 1 }, // Changed from profitPayouts to payouts
         },
         orderBy: { createdAt: "desc" },
       });
@@ -176,7 +176,7 @@ export const getInvestmentDetails = asyncHandler(
         include: {
           user: true,
           deposits: { orderBy: { depositDate: "desc" } },
-          profitPayouts: { orderBy: { payoutDate: "desc" } },
+          payouts: { orderBy: { payoutDate: "desc" } },
         },
       });
 

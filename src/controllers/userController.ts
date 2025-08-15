@@ -718,7 +718,7 @@ export const getProfile = asyncHandler(
             orderBy: { depositDate: "desc" },
             take: 1,
           },
-          profitPayouts: {
+          payouts: {
             orderBy: { payoutDate: "desc" },
             take: 1,
           },
@@ -802,7 +802,7 @@ export const getProfile = asyncHandler(
     });
 
     // Format long-term investment data with additional details
-    const investmentDetails = longTermInvestment
+     const investmentDetails = longTermInvestment
       ? {
           investmentId: longTermInvestment.id,
           totalDeposited: longTermInvestment.totalDeposited,
@@ -815,10 +815,10 @@ export const getProfile = asyncHandler(
                 date: longTermInvestment.deposits[0].depositDate,
               }
             : null,
-          lastPayout: longTermInvestment.profitPayouts[0]
+          lastPayout: longTermInvestment.payouts[0] // Changed from profitPayouts to payouts
             ? {
-                amount: longTermInvestment.profitPayouts[0].amount,
-                date: longTermInvestment.profitPayouts[0].payoutDate,
+                amount: longTermInvestment.payouts[0].amount,
+                date: longTermInvestment.payouts[0].payoutDate,
               }
             : null,
           depositHistory: investmentDepositHistory,
@@ -1118,37 +1118,38 @@ export const exportAllUsers = asyncHandler(
         include: {
           profile: true,
           contactInfo: true,
-          EventRegistration: {
+          eventRegistrations: {  // Changed from EventRegistration
             include: {
               event: true
             }
           },
-          GoldLot: {
+          goldLots: {  // Changed from GoldLot
             include: {
               program: true,
               payments: true,
               winners: true
             }
           },
-          LongTermInvestment: {
+          investments: {  // Changed from LongTermInvestment
             include: {
               deposits: true,
-              profitPayouts: true
+              payouts: true  // Changed from profitPayouts
             }
           },
-          Travel: {
+          travels: {  // Changed from Travel
             include: {
               fromAirport: true,
               toAirport: true
             }
           },
-          UserSurveyAnswer: true,
-          Notification: true
+          surveyAnswers: true,  // Changed from UserSurveyAnswer
+          notifications: true  // Changed from Notification
         },
         orderBy: {
           createdAt: 'desc'
         }
       });
+
 
       // Create workbook and worksheets
       const workbook = new ExcelJS.Workbook();

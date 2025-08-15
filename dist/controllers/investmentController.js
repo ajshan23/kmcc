@@ -78,7 +78,7 @@ exports.getUserInvestments = (0, asyncHandler_1.asyncHandler)((req, res) => __aw
             where: { userId },
             include: {
                 deposits: { orderBy: { depositDate: "desc" } },
-                profitPayouts: { orderBy: { payoutDate: "desc" } },
+                payouts: { orderBy: { payoutDate: "desc" } },
                 user: true,
             },
             orderBy: { startDate: "desc" },
@@ -130,7 +130,7 @@ exports.getInvestments = (0, asyncHandler_1.asyncHandler)((req, res) => __awaite
             include: {
                 user: true,
                 deposits: { orderBy: { depositDate: "desc" }, take: 1 },
-                profitPayouts: { orderBy: { payoutDate: "desc" }, take: 1 },
+                payouts: { orderBy: { payoutDate: "desc" }, take: 1 }, // Changed from profitPayouts to payouts
             },
             orderBy: { createdAt: "desc" },
         });
@@ -155,7 +155,7 @@ exports.getInvestmentDetails = (0, asyncHandler_1.asyncHandler)((req, res) => __
             include: {
                 user: true,
                 deposits: { orderBy: { depositDate: "desc" } },
-                profitPayouts: { orderBy: { payoutDate: "desc" } },
+                payouts: { orderBy: { payoutDate: "desc" } },
             },
         });
         if (!investment) {

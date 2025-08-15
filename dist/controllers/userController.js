@@ -602,7 +602,7 @@ exports.getProfile = (0, asyncHandler_1.asyncHandler)((req, res) => __awaiter(vo
                     orderBy: { depositDate: "desc" },
                     take: 1,
                 },
-                profitPayouts: {
+                payouts: {
                     orderBy: { payoutDate: "desc" },
                     take: 1,
                 },
@@ -691,10 +691,10 @@ exports.getProfile = (0, asyncHandler_1.asyncHandler)((req, res) => __awaiter(vo
                     date: longTermInvestment.deposits[0].depositDate,
                 }
                 : null,
-            lastPayout: longTermInvestment.profitPayouts[0]
+            lastPayout: longTermInvestment.payouts[0] // Changed from profitPayouts to payouts
                 ? {
-                    amount: longTermInvestment.profitPayouts[0].amount,
-                    date: longTermInvestment.profitPayouts[0].payoutDate,
+                    amount: longTermInvestment.payouts[0].amount,
+                    date: longTermInvestment.payouts[0].payoutDate,
                 }
                 : null,
             depositHistory: investmentDepositHistory,
@@ -914,32 +914,32 @@ exports.exportAllUsers = (0, asyncHandler_1.asyncHandler)((req, res) => __awaite
             include: {
                 profile: true,
                 contactInfo: true,
-                EventRegistration: {
+                eventRegistrations: {
                     include: {
                         event: true
                     }
                 },
-                GoldLot: {
+                goldLots: {
                     include: {
                         program: true,
                         payments: true,
                         winners: true
                     }
                 },
-                LongTermInvestment: {
+                investments: {
                     include: {
                         deposits: true,
-                        profitPayouts: true
+                        payouts: true // Changed from profitPayouts
                     }
                 },
-                Travel: {
+                travels: {
                     include: {
                         fromAirport: true,
                         toAirport: true
                     }
                 },
-                UserSurveyAnswer: true,
-                Notification: true
+                surveyAnswers: true, // Changed from UserSurveyAnswer
+                notifications: true // Changed from Notification
             },
             orderBy: {
                 createdAt: 'desc'
